@@ -1,7 +1,4 @@
-package com.api.b_plus_studio.Enums;
-
-import java.util.HashMap;
-import java.util.Map;
+package com.api.b_plus_studio.enums;
 
 public enum UserStatus {
     ACTIVE("ACTIVE"),
