@@ -1,6 +1,6 @@
 package com.api.b_plus_studio.entities;
 
-import com.api.b_plus_studio.Enums.UserStatus;
+import com.api.b_plus_studio.enums.UserStatus;
 import jakarta.persistence.*;
         import lombok.*;
         import org.hibernate.annotations.CreationTimestamp;
