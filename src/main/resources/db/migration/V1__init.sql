@@ -3,6 +3,8 @@ CREATE TABLE IF NOT EXISTS users (
     id BIGSERIAL PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
     username VARCHAR(100) NOT NULL,
+    firstname VARCHAR(100) NOT NULL,
+    lastname VARCHAR(100) NOT NULL,
     password_hash VARCHAR(255), -- Nullable for SSO users
     oauth_provider VARCHAR(50), -- e.g., GOOGLE, FACEBOOK
     oauth_id VARCHAR(255) UNIQUE, -- Nullable for email/password users
