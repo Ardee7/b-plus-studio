@@ -9,6 +9,7 @@ import com.api.b_plus_studio.services.CategoryService;
 import com.api.b_plus_studio.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/businesses")
 @RequiredArgsConstructor
+@Slf4j
 public class BusinessController {
 
     private final BusinessService businessService;
