@@ -1,5 +1,6 @@
 package com.api.b_plus_studio.entities;
 
+import com.api.b_plus_studio.enums.Role;
 import com.api.b_plus_studio.enums.UserStatus;
 import jakarta.persistence.*;
         import lombok.*;
@@ -7,8 +8,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -29,6 +29,12 @@ public class User {
     @Column(nullable = false)
     private String username;
 
+    @Column(nullable = false)
+    private String firstname;
+
+    @Column(nullable = false)
+    private String lastname;
+
     private String passwordHash; // Nullable for SSO users
 
     private String oauthProvider; // GOOGLE, FACEBOOK, etc.
@@ -36,7 +42,7 @@ public class User {
     private String oauthId; // Unique provider-specific user ID
 
     @Column(nullable = false)
-    private String role = "USER";
+    private Role role;
 
     private String profilePicture;
 
