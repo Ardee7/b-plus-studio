@@ -5,21 +5,22 @@ import com.api.b_plus_studio.dtos.CreateUserRequest;
 import com.api.b_plus_studio.dtos.UserRequest;
 import com.api.b_plus_studio.dtos.UserResponse;
 import com.api.b_plus_studio.entities.User;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 
-import java.util.List;
-
+import java.util.UUID;
 
 public interface UserService {
     User findByEmail(String email);
 
     User createUser(CreateUserRequest request);
 
-    List<UserResponse> getAllUsers();
+    PagedModel<EntityModel<UserResponse>> getAllUsers(int page, int size, String sortBy);
 
-    UserResponse getUserById(Long id) throws UserException;
+    UserResponse getUserById(UUID id) throws UserException;
 
-    UserResponse updateUser(Long id, UserRequest request);
+    UserResponse updateUser(UUID id, UserRequest request);
 
-    void deleteUser(Long id);
+    void deleteUser(UUID id);
 }
 

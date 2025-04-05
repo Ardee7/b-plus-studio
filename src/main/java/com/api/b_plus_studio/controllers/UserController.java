@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 
 @RestController
 @RequestMapping("/api/user")
@@ -30,14 +32,18 @@ public class UserController {
     })
     @PostMapping
     public ResponseEntity createUser(@Validated @RequestBody CreateUserRequest request) {
-        return ResponseEntity.ok(new ResponseEntity<>(GenericResponse.build(userService.createUser(request)), HttpStatus.OK));
+        return new ResponseEntity<>(GenericResponse.build(userService.createUser(request)), HttpStatus.OK);
     }
 
     @Operation(summary = "Get all users", description = "Retrieves a list of all users.")
     @ApiResponse(responseCode = "200", description = "List of users retrieved successfully")
     @GetMapping
-    public ResponseEntity getAllUsers() {
-        return ResponseEntity.ok(new ResponseEntity<>(GenericResponse.build(userService.getAllUsers()), HttpStatus.OK));
+    public ResponseEntity getAllUsers(
+            @RequestParam(defaultValue = "0") int page,     // page number
+            @RequestParam(defaultValue = "10") int size,    // page size
+            @RequestParam(defaultValue = "createdAt") String sortBy // optional sorting
+    ) {
+        return new ResponseEntity<>(GenericResponse.build(userService.getAllUsers(page, size,sortBy)), HttpStatus.OK);
     }
 
     @Operation(summary = "Get user by ID", description = "Retrieves a user by their unique ID.")
@@ -46,8 +52,8 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     @GetMapping("/{id}")
-    public ResponseEntity getUserById(@PathVariable Long id) throws UserException {
-        return ResponseEntity.ok(new ResponseEntity<>(GenericResponse.build(userService.getUserById(id)), HttpStatus.OK));
+    public ResponseEntity getUserById(@PathVariable UUID id) throws UserException {
+        return new ResponseEntity<>(GenericResponse.build(userService.getUserById(id)), HttpStatus.OK);
     }
 
     @Operation(summary = "Update a user", description = "Updates the details of an existing user.")
@@ -56,20 +62,20 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Invalid request data"),
             @ApiResponse(responseCode = "404", description = "User not found")
     })
-    @PutMapping("/{id}")
-    public ResponseEntity updateUser(@PathVariable Long id, @Validated @RequestBody UserRequest request) {
-        return ResponseEntity.ok(new ResponseEntity<>(GenericResponse.build(userService.updateUser(id, request)), HttpStatus.OK));
+    @PatchMapping("/{id}")
+    public ResponseEntity updateUser(@PathVariable UUID id, @Validated @RequestBody UserRequest request) {
+        return new ResponseEntity<>(GenericResponse.build(userService.updateUser(id, request)), HttpStatus.OK);
     }
 
-    @Operation(summary = "Delete a user", description = "Deletes a user by their ID.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "User deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "User not found")
-    })
-    @DeleteMapping("/{id}")
-    public ResponseEntity deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-        return ResponseEntity.ok(new ResponseEntity<>(GenericResponse.build("Deletion Completed"), HttpStatus.OK));
-    }
+//    @Operation(summary = "Delete a user", description = "Deletes a user by their ID.")
+//    @ApiResponses({
+//            @ApiResponse(responseCode = "200", description = "User deleted successfully"),
+//            @ApiResponse(responseCode = "404", description = "User not found")
+//    })
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity deleteUser(@PathVariable UUID id) {
+//        userService.deleteUser(id);
+//        return new ResponseEntity<>(GenericResponse.build("Deletion Completed"), HttpStatus.OK);
+//    }
 
 }
