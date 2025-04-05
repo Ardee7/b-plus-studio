@@ -7,6 +7,7 @@ import jakarta.persistence.*;
         import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -20,8 +21,8 @@ import java.time.LocalDateTime;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -41,6 +42,7 @@ public class User {
 
     private String oauthId; // Unique provider-specific user ID
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
@@ -54,6 +56,7 @@ public class User {
 
     private LocalDateTime lastLogin;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserStatus status = UserStatus.ACTIVE; // ACTIVE, INACTIVE, BANNED, etc.
 }

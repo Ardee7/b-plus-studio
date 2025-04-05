@@ -1,10 +1,8 @@
 package com.api.b_plus_studio.services.impl;
 
-import com.api.b_plus_studio.Exceptions.BaseServiceException;
 import com.api.b_plus_studio.Exceptions.UserException;
 import com.api.b_plus_studio.Utilities.PojoUtils;
 import com.api.b_plus_studio.dtos.CreateUserRequest;
-import com.api.b_plus_studio.dtos.ExceptionResponse;
 import com.api.b_plus_studio.dtos.UserRequest;
 import com.api.b_plus_studio.dtos.UserResponse;
 import com.api.b_plus_studio.entities.User;
@@ -14,6 +12,14 @@ import com.api.b_plus_studio.repositories.UserRepository;
 import com.api.b_plus_studio.services.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,16 +27,18 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PagedResourcesAssembler<UserResponse> pagedResourcesAssembler;
 
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
@@ -66,16 +74,20 @@ public class UserServiceImpl implements UserService {
 
     // Get all users
     @Override
-    public List<UserResponse> getAllUsers() {
-        return userRepository.findAll()
-                .stream()
-                .map(this::toResponse)
-                .collect(Collectors.toList());
+    public PagedModel<EntityModel<UserResponse>> getAllUsers(int page, int size, String sortBy) {
+        log.info("Getting all pageable users.");
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        log.info("JPA find all repository function conducted.");
+        Page<User> usersPage = userRepository.findAll(pageable);
+
+        log.info("Mapping users from user raw entities to user response dto.");
+        Page<UserResponse> pageUser = usersPage.map(this::toResponse);
+        return pagedResourcesAssembler.toModel(pageUser);
     }
 
     // Get user by ID
     @Override
-    public UserResponse getUserById(Long id) throws UserException {
+    public UserResponse getUserById(UUID id) throws UserException {
         return userRepository.findById(id)
                 .map(this::toResponse)
                 .orElseThrow(() -> new UserException("User Not Found."));
@@ -84,7 +96,7 @@ public class UserServiceImpl implements UserService {
     // Update user
     @Transactional
     @Override
-    public UserResponse updateUser(Long id, UserRequest request) {
+    public UserResponse updateUser(UUID id, UserRequest request) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -101,7 +113,7 @@ public class UserServiceImpl implements UserService {
     // Delete user
     @Transactional
     @Override
-    public void deleteUser(Long id) {
+    public void deleteUser(UUID id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         userRepository.delete(user);

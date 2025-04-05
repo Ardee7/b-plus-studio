@@ -1,6 +1,6 @@
 -- USERS TABLE
 CREATE TABLE IF NOT EXISTS users (
-    id BIGSERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
     username VARCHAR(100) NOT NULL,
     firstname VARCHAR(100) NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS categories (
 -- BUSINESSES TABLE
 CREATE TABLE IF NOT EXISTS businesses (
     id BIGSERIAL PRIMARY KEY,
-    owner_id BIGINT NOT NULL,
+    owner_id UUID NOT NULL,
     name VARCHAR(255) UNIQUE NOT NULL,
     description TEXT,
     category_id BIGINT NOT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS products (
 -- ORDERS TABLE
 CREATE TABLE IF NOT EXISTS orders (
     id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL,
+    user_id UUID NOT NULL,
     business_id BIGINT NOT NULL,
     total_price DECIMAL(10,2) NOT NULL,
     status VARCHAR(50) DEFAULT 'PENDING' NOT NULL,
@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS order_items (
 -- REVIEWS TABLE
 CREATE TABLE IF NOT EXISTS reviews (
     id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL,
+    user_id UUID NOT NULL,
     business_id BIGINT, -- Nullable (for product reviews)
     product_id BIGINT,  -- Nullable (for business reviews)
     rating INT CHECK (rating BETWEEN 1 AND 5) NOT NULL,
@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS reviews (
 -- FAVORITES TABLE
 CREATE TABLE IF NOT EXISTS favorites (
     id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL,
+    user_id UUID NOT NULL,
     business_id BIGINT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     CONSTRAINT fk_favorite_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
