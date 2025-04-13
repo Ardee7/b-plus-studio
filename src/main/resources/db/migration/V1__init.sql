@@ -16,6 +16,42 @@ CREATE TABLE IF NOT EXISTS users (
     status VARCHAR(50) DEFAULT 'ACTIVE' NOT NULL
 );
 
+--users insert scripts - START
+INSERT INTO users (
+    id,
+    email,
+    username,
+    firstname,
+    lastname,
+    password_hash,
+    oauth_provider,
+    oauth_id,
+    role,
+    profile_picture,
+    created_at,
+    updated_at,
+    last_login,
+    status
+)
+VALUES (
+    '362000f6-f226-43c6-8ab1-2b2343762447',
+    'admin@bplus-studio',
+    'admin@bplus-studio',
+    'Admin',
+    'BplusStudio',
+    '$2a$12$yepIAklRFuHH8GDHfl0F7eamYlO6IQ.JHK2/nIGznLYsfC24XW.B6', -- bcrypt hash for '@wsxzaq!admin'
+    NULL,
+    NULL,
+    'SUPER_ADMIN',
+    NULL,
+    CURRENT_TIMESTAMP,
+    NULL,
+    NULL,
+    'ACTIVE'
+);
+
+--users insert scripts - END
+
 -- CATEGORIES TABLE
 CREATE TABLE IF NOT EXISTS categories (
     id BIGSERIAL PRIMARY KEY,
